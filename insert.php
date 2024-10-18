@@ -1,5 +1,10 @@
 <?php 
     
+    $servername="localhost";
+    $username= "root";
+    $password= "";
+    $dbname= "myshop";
+
     
     
     $name='';
@@ -8,6 +13,12 @@
     $address= '';
     $errorMessage="";
     $successMessage= "";
+
+    $con = new mysqli($servername, $username, $password, $dbname);
+
+    if ($con->connect_error){
+        die("Connection Error". $con->connect_error);
+    }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = $_POST['name'];
@@ -22,13 +33,22 @@
             }
 
             // add new client to database
+            $sql = "INSERT INTO clients (name, email, phone, address)" . "VALUES('$name', '$email', '$phone', '$address')";
+            $result = $con->query($sql);
+
+            if (!$result) {
+                $errorMessage = "invalid Query: " . $connection->error;
+                break;
+            }
+
             $name='';
             $email='';
             $phone= '';
             $address= '';
 
             $successMessage = "Client added successfully";
-
+            header("location: /shop/index.php");
+            exit;
         } while(false);
     }
 
